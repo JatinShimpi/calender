@@ -54,100 +54,130 @@ const App = () => {
   }, [year, month]);
 
   const [events, setEvents] = useState([
-    {
-      name: "Team Meeting",
-      date: "2025-01-01", // Use ISO 8601 format for easy parsing and sorting
-      startTime: "10:00",
-      endTime: "11:00",
-      description: "Discuss project updates",
-      status: "pending",
-    },
-    {
-      name: "Doctor Appointment",
-      date: "2025-01-01",
-      startTime: "15:00",
-      endTime: "15:30",
-      description: "Annual check-up",
-      status: "completed",
-    },
-    {
-      name: "Lunch with Sarah",
-      date: "2025-01-02",
-      startTime: "12:00",
-      endTime: "13:00",
-      description: "Catch up over lunch",
-      status: "pending",
-    },
-    {
-      name: "Gym Session",
-      date: "2025-01-03",
-      startTime: "18:00",
-      endTime: "19:00",
-      description: "Workout session",
-      status: "completed",
-    },
-    {
-      name: "Project Deadline",
-      date: "2025-01-04",
-      startTime: "09:00",
-      endTime: "17:00",
-      description: "Submit project deliverables",
-      status: "pending",
-    },
-    {
-      name: "Conference Call",
-      date: "2025-01-05",
-      startTime: "14:00",
-      endTime: "15:00",
-      description: "Discuss Q1 targets",
-      status: "completed",
-    },
-    {
-      name: "Dinner with Family",
-      date: "2025-01-06",
-      startTime: "19:00",
-      endTime: "21:00",
-      description: "Family dinner at home",
-      status: "pending",
-    },
-    {
-      name: "Client Presentation",
-      date: "2025-01-07",
-      startTime: "11:00",
-      endTime: "12:00",
-      description: "Present project progress",
-      status: "completed",
-    },
-    {
-      name: "Yoga Class",
-      date: "2025-01-08",
-      startTime: "07:00",
-      endTime: "08:00",
-      description: "Morning yoga session",
-      status: "pending",
-    },
-    {
-      name: "Team Outing",
-      date: "2025-01-09",
-      startTime: "16:00",
-      endTime: "20:00",
-      description: "Team building activities",
-      status: "completed",
-    },
+    // {
+    //   name: "Team Meeting",
+    //   date: "2025-01-01", // Use ISO 8601 format for easy parsing and sorting
+    //   startTime: "10:00",
+    //   endTime: "11:00",
+    //   description: "Discuss project updates",
+    //   status: "pending",
+    // },
+    // {
+    //   name: "Doctor Appointment",
+    //   date: "2025-01-01",
+    //   startTime: "15:00",
+    //   endTime: "15:30",
+    //   description: "Annual check-up",
+    //   status: "completed",
+    // },
+    // {
+    //   name: "Lunch with Sarah",
+    //   date: "2025-01-02",
+    //   startTime: "12:00",
+    //   endTime: "13:00",
+    //   description: "Catch up over lunch",
+    //   status: "pending",
+    // },
+    // {
+    //   name: "Gym Session",
+    //   date: "2025-01-03",
+    //   startTime: "18:00",
+    //   endTime: "19:00",
+    //   description: "Workout session",
+    //   status: "completed",
+    // },
+    // {
+    //   name: "Project Deadline",
+    //   date: "2025-01-04",
+    //   startTime: "09:00",
+    //   endTime: "17:00",
+    //   description: "Submit project deliverables",
+    //   status: "pending",
+    // },
+    // {
+    //   name: "Conference Call",
+    //   date: "2025-01-05",
+    //   startTime: "14:00",
+    //   endTime: "15:00",
+    //   description: "Discuss Q1 targets",
+    //   status: "completed",
+    // },
+    // {
+    //   name: "Dinner with Family",
+    //   date: "2025-01-06",
+    //   startTime: "19:00",
+    //   endTime: "21:00",
+    //   description: "Family dinner at home",
+    //   status: "pending",
+    // },
+    // {
+    //   name: "Client Presentation",
+    //   date: "2025-01-07",
+    //   startTime: "11:00",
+    //   endTime: "12:00",
+    //   description: "Present project progress",
+    //   status: "completed",
+    // },
+    // {
+    //   name: "Yoga Class",
+    //   date: "2025-01-08",
+    //   startTime: "07:00",
+    //   endTime: "08:00",
+    //   description: "Morning yoga session",
+    //   status: "pending",
+    // },
+    // {
+    //   name: "Team Outing",
+    //   date: "2025-01-09",
+    //   startTime: "16:00",
+    //   endTime: "20:00",
+    //   description: "Team building activities",
+    //   status: "completed",
+    // },
   ]);
+  console.log(events);
 
-  useEffect(() => {
-    const storedEvents = localStorage.getItem("events");
-    if (storedEvents) {
-      setEvents(JSON.parse(storedEvents));
-    }
-  }, []);
+ useEffect(() => {
+   const storedEvents = localStorage.getItem("events");
+   if (storedEvents) {
+     setEvents(JSON.parse(storedEvents));
+   }
+ }, []);
 
-  useEffect(() => {
-    localStorage.setItem("events", JSON.stringify(events));
-  }, [events]);
+ useEffect(() => {
+   // Avoid saving to localStorage during the initial load
+   if (events.length > 0) {
+     localStorage.setItem("events", JSON.stringify(events));
+   }
+ }, [events]);
+
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const [modalDate, setModalDate] = useState<string | null>(null);
+
+  interface Event {
+    name: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    description: string;
+    status: string;
+  }
+
+  const addEvent = (event: Event) => {
+    setEvents((prevEvents) => [...prevEvents, event]);
+  };
+
+  const deleteEvent = (index: number) => {
+    setEvents((prevEvents) => prevEvents.filter((_, i) => i !== index));
+  };
+
+  const editEvent = (index: number, newEvent: Event) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event, i) => (i === index ? newEvent : event))
+    );
+  };
 
   return (
     <div className="flex flex-row h-screen">
@@ -198,10 +228,19 @@ const App = () => {
               currDay={currDay}
               selectedMonth={month}
               onClick={() => setIsOpen(!isOpen)}
+              setModalDate={setModalDate}
             />
           ))}
         </div>
-        <DayModal isOpen={isOpen} setIsOpen={setIsOpen} />
+        <DayModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          events={events}
+          selectedDate={modalDate}
+          onEditEvent={editEvent}
+          onAddEvent={addEvent}
+          onDeleteEvent={deleteEvent}
+        />
       </div>
     </div>
   );

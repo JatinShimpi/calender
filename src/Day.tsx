@@ -27,18 +27,27 @@ export function Day({
   currMonth,
   year,
   onClick,
+  setModalDate,
 }: Props) {
   const formattedMonth = (currMonth + 1).toString().padStart(2, "0");
   const formattedDay = day.toString().padStart(2, "0");
 
   const currentDate = `${year}-${formattedMonth}-${formattedDay}`;
 
-  console.log(currentDate);
+  const formattedSelectedMonth = (selectedMonth + 1).toString().padStart(2, "0");
+  const selecteddate = `${year}-${formattedSelectedMonth}-${formattedDay}`;
+
+  // console.log(currentDate);
 
   const matchingEvents = events.filter((event) => event.date === currentDate);
 
+  const handleClick = () => {
+    setModalDate(selecteddate); // Set the modal date to the current date
+    onClick();
+  };
+
   return (
-    <Card className="w-32 h-28 mx-2 my-2" onClick={onClick}>
+    <Card className="w-32 h-28 mx-2 my-2" onClick={handleClick}>
       <div className="ml-2 mt-2">
         <CardTitle className="mx-auto">
           {day === currDay && selectedMonth === currMonth ? (
