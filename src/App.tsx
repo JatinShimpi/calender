@@ -5,13 +5,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+} from "./components/ui/dropdown-menu";
 import { Button } from "./components/ui/button";
 import { Day } from "./Day";
+import DayModal from "./DayModal";
 
 const App = () => {
   const currentDate = new Date();
-  const day: number = currentDate.getDay();
+  const currDay: number = currentDate.getDate();
   const currMonth: number = currentDate.getMonth();
   const currYear: number = currentDate.getFullYear();
 
@@ -51,6 +52,102 @@ const App = () => {
   useEffect(() => {
     setDaysOfMonth(getDaysInMonthStatic(year, month));
   }, [year, month]);
+
+  const [events, setEvents] = useState([
+    {
+      name: "Team Meeting",
+      date: "2025-01-01", // Use ISO 8601 format for easy parsing and sorting
+      startTime: "10:00",
+      endTime: "11:00",
+      description: "Discuss project updates",
+      status: "pending",
+    },
+    {
+      name: "Doctor Appointment",
+      date: "2025-01-01",
+      startTime: "15:00",
+      endTime: "15:30",
+      description: "Annual check-up",
+      status: "completed",
+    },
+    {
+      name: "Lunch with Sarah",
+      date: "2025-01-02",
+      startTime: "12:00",
+      endTime: "13:00",
+      description: "Catch up over lunch",
+      status: "pending",
+    },
+    {
+      name: "Gym Session",
+      date: "2025-01-03",
+      startTime: "18:00",
+      endTime: "19:00",
+      description: "Workout session",
+      status: "completed",
+    },
+    {
+      name: "Project Deadline",
+      date: "2025-01-04",
+      startTime: "09:00",
+      endTime: "17:00",
+      description: "Submit project deliverables",
+      status: "pending",
+    },
+    {
+      name: "Conference Call",
+      date: "2025-01-05",
+      startTime: "14:00",
+      endTime: "15:00",
+      description: "Discuss Q1 targets",
+      status: "completed",
+    },
+    {
+      name: "Dinner with Family",
+      date: "2025-01-06",
+      startTime: "19:00",
+      endTime: "21:00",
+      description: "Family dinner at home",
+      status: "pending",
+    },
+    {
+      name: "Client Presentation",
+      date: "2025-01-07",
+      startTime: "11:00",
+      endTime: "12:00",
+      description: "Present project progress",
+      status: "completed",
+    },
+    {
+      name: "Yoga Class",
+      date: "2025-01-08",
+      startTime: "07:00",
+      endTime: "08:00",
+      description: "Morning yoga session",
+      status: "pending",
+    },
+    {
+      name: "Team Outing",
+      date: "2025-01-09",
+      startTime: "16:00",
+      endTime: "20:00",
+      description: "Team building activities",
+      status: "completed",
+    },
+  ]);
+
+  useEffect(() => {
+    const storedEvents = localStorage.getItem("events");
+    if (storedEvents) {
+      setEvents(JSON.parse(storedEvents));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("events", JSON.stringify(events));
+  }, [events]);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="flex flex-row h-screen">
@@ -95,10 +192,16 @@ const App = () => {
             <Day
               key={index + 1}
               day={index + 1}
-              events={["do laundry", "clean room"]}
+              currMonth={currMonth}
+              year={year}
+              events={events}
+              currDay={currDay}
+              selectedMonth={month}
+              onClick={() => setIsOpen(!isOpen)}
             />
           ))}
         </div>
+        <DayModal isOpen={isOpen} setIsOpen={setIsOpen} />
       </div>
     </div>
   );
