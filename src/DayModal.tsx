@@ -27,7 +27,7 @@ interface Props {
   onAddEvent: (event: Event) => void;
   onDeleteEvent: (index: number) => void;
   onEditEvent: (index: number, newEvent: Event) => void;
-  selectedDate: string; // Add selectedDate prop
+  selectedDate: string | null; // Add selectedDate prop
 }
 
 function DayModal({
@@ -73,7 +73,7 @@ function DayModal({
     onAddEvent(newEvent);
     setNewEvent({
       name: "",
-      date: selectedDate, // Explicitly reset to selectedDate
+      date: selectedDate ?? "", // Explicitly reset to selectedDate
       startTime: "",
       endTime: "",
       description: "",

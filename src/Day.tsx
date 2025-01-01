@@ -1,5 +1,4 @@
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { MouseEventHandler } from "react";
+import { Card, CardTitle } from "@/components/ui/card";
 
 interface Props {
   day: number;
@@ -11,12 +10,12 @@ interface Props {
     description: string;
     status: string;
   }[];
-  month: string;
   year: number;
-  onClick: MouseEventHandler<HTMLDivElement>;
   currDay: number;
   selectedMonth: number;
   currMonth: number;
+  setModalDate: (date: string) => void;
+  onClick: () => void;
 }
 
 export function Day({

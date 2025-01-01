@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   DropdownMenu,
@@ -9,6 +9,14 @@ import {
 import { Button } from "./components/ui/button";
 import { Day } from "./Day";
 import DayModal from "./DayModal";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./components/ui/card";
+import { Separator } from "./components/ui/separator";
 
 const App = () => {
   const currentDate = new Date();
@@ -16,7 +24,7 @@ const App = () => {
   const currMonth: number = currentDate.getMonth();
   const currYear: number = currentDate.getFullYear();
 
-  function getDaysInMonthStatic(year, month) {
+  function getDaysInMonthStatic(year:number, month:number) {
     const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     // Adjust for leap year
     if (
@@ -53,7 +61,7 @@ const App = () => {
     setDaysOfMonth(getDaysInMonthStatic(year, month));
   }, [year, month]);
 
-  const [events, setEvents] = useState([
+  const [events, setEvents] = useState<Event[]>([
     // {
     //   name: "Team Meeting",
     //   date: "2025-01-01", // Use ISO 8601 format for easy parsing and sorting
@@ -137,20 +145,19 @@ const App = () => {
   ]);
   console.log(events);
 
- useEffect(() => {
-   const storedEvents = localStorage.getItem("events");
-   if (storedEvents) {
-     setEvents(JSON.parse(storedEvents));
-   }
- }, []);
+  useEffect(() => {
+    const storedEvents = localStorage.getItem("events");
+    if (storedEvents) {
+      setEvents(JSON.parse(storedEvents));
+    }
+  }, []);
 
- useEffect(() => {
-   // Avoid saving to localStorage during the initial load
-   if (events.length > 0) {
-     localStorage.setItem("events", JSON.stringify(events));
-   }
- }, [events]);
-
+  useEffect(() => {
+    // Avoid saving to localStorage during the initial load
+    if (events.length > 0) {
+      localStorage.setItem("events", JSON.stringify(events));
+    }
+  }, [events]);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -179,42 +186,95 @@ const App = () => {
     );
   };
 
+  const sortedEvents = [...events].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
   return (
     <div className="flex flex-row h-screen">
-      <div className="flex bg-red-200 w-1/3">siebar</div>
-      <div className="flex bg-red-400 w-2/3 flex-col">
-        <div className="bg-orange-300 flex flex-row">
-          <div className="mx-1 my-1">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">{year}</Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-15 dropdown-menu-content">
-                {Array.from({ length: 77 }, (_, index) => (
-                  <DropdownMenuItem
-                    key={index}
-                    onClick={() => setYear(2024 + index)}
-                  >
-                    {2024 + index}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+      <div className="flex bg-gray-700 w-1/3 flex-col p-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Events Sorted by Date</CardTitle>
+            <CardDescription>
+              List of events sorted chronologically
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {sortedEvents.map((event, index) => (
+              <div key={index} className="mb-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-gray-700">
+                    {event.date}
+                  </span>
+                  <span>{event.name}</span>
+                </div>
+                <Separator className="my-2" />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+      <div className="flex bg-gray-900 w-2/3 flex-col">
+        <div className="bg-slate-800 flex flex-row justify-between">
+
+          <div className="flex flex-row my-2 ml-2">
+            <div className="">
+              <Button
+                variant="outline"
+                className="mr-1"
+                onClick={() => setMonth((prev) => (prev === 0 ? 11 : prev - 1))}
+              >
+                Prev
+              </Button>
+            </div>
+            <div className="mx-1">
+              <Button
+                variant="outline"
+                className="mr-1"
+                onClick={() => setMonth((prev) => (prev === 11 ? 0 : prev + 1))}
+              >
+                Next
+              </Button>
+            </div>
           </div>
 
-          <div className="mx-1 my-1">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline">{months[month]}</Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-15 dropdown-menu-content">
-                {months.map((monthName, index) => (
-                  <DropdownMenuItem key={index} onClick={() => setMonth(index)}>
-                    {monthName}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          <div className="flex flex-row mr-2">
+            <div className="mx-2 my-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">{year}</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-15 dropdown-menu-content">
+                  {Array.from({ length: 77 }, (_, index) => (
+                    <DropdownMenuItem
+                      key={index}
+                      onClick={() => setYear(2024 + index)}
+                    >
+                      {2024 + index}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            <div className="my-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">{months[month]}</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-15 dropdown-menu-content">
+                  {months.map((monthName, index) => (
+                    <DropdownMenuItem
+                      key={index}
+                      onClick={() => setMonth(index)}
+                    >
+                      {monthName}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
         <div className="flex flex-wrap">
