@@ -60,7 +60,7 @@ const App = () => {
           <div className="mx-1 my-1">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">Select Year</Button>
+                <Button variant="outline">{year}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-15 dropdown-menu-content">
                 {Array.from({ length: 77 }, (_, index) => (
@@ -78,7 +78,7 @@ const App = () => {
           <div className="mx-1 my-1">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">Select Month</Button>
+                <Button variant="outline">{months[month]}</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-15 dropdown-menu-content">
                 {months.map((monthName, index) => (
